@@ -9,17 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
-{
-    /**
-     * Display the login view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('auth.login');
-    }
-
+{   
     /**
      * Handle an incoming authentication request.
      *
@@ -27,12 +17,13 @@ class AuthenticatedSessionController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(LoginRequest $request)
-    {
-        $request->authenticate();
+    {                
 
+        $request->authenticate();                
+        
         $request->session()->regenerate();
 
-        if ($request->wantsJson()){
+        if ($request->wantsJson()) {
             return response()->json($request->user());
         }
 

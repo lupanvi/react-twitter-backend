@@ -16,13 +16,18 @@ use \App\Http\Controllers\TweetsController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+use App\Http\Controllers\Auth\VerifyEmailController;
+
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request ) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-	
-	Route::get('/tweets',[TweetsController::class,'index']);
-	Route::post('/tweets',[TweetsController::class, 'store']);	
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get('/tweets', [TweetsController::class,'index']);
+    Route::post('/tweets', [TweetsController::class, 'store']);
+    Route::get('/verify-email/{hash}', [VerifyEmailController::class, 'verify'])
+        ->middleware(['throttle:6,1'])
+        ->name('verification.verify');               
 
 });
