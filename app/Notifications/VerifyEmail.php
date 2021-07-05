@@ -21,22 +21,7 @@ class VerifyEmail extends \Illuminate\Auth\Notifications\VerifyEmail implements 
      * @return string
      */
     protected function verificationUrl($notifiable)
-    {
-        /*if (static::$createUrlCallback) {
-            return call_user_func(static::$createUrlCallback, $notifiable);
-        }
-
-        $temporary_url =  URL::temporarySignedRoute(
-            'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            [
-                'id' => $notifiable->getKey(),
-                'hash' => sha1($notifiable->getEmailForVerification()),
-            ], 
-            false
-        );
-
-        return config('frontend.email_verify_url') . $temporary_url;*/
+    {       
 
         $hash = Crypt::encrypt($notifiable->getKey());
 

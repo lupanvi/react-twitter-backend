@@ -17,9 +17,10 @@ use \App\Http\Controllers\TweetsController;
 */
 
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Resources\UserResource;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request ) {
-    return $request->user();
+    return new UserResource($request->user());
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

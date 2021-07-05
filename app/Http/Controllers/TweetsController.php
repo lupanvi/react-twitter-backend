@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TweetResource;
 use Illuminate\Http\Request;
 use App\Models\Tweet;
 
@@ -14,7 +15,9 @@ class TweetsController extends Controller
      */
     public function index()
     {
-        return Tweet::with('user')->latest()->get();
+        return TweetResource::collection(
+            Tweet::with('user')->latest()->paginate(10)
+        );
     }   
 
     /**
@@ -31,7 +34,9 @@ class TweetsController extends Controller
 
         $tweet = auth()->user()->tweets()->create([
             'content' => request('content'),
-            'image_path' => request('image_path') ? request()->file('image_path')->store('tweets', 'public') : null 
+            'image_path' => request('image_path') 
+                ? request()->file('image_path')->store('tweets', 'public') 
+                : null
         ]);
 
         return $tweet->load('user');
