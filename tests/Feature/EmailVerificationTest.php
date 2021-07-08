@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
+use App\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\Crypt;
 
 class EmailVerificationTest extends TestCase
 {
@@ -32,18 +34,20 @@ class EmailVerificationTest extends TestCase
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
+       
+        $hash =  Crypt::encrypt($user->getKey());        
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1($user->email)]
-        );
+        $verificationUrl = route('verification.verify', ['hash'=>$hash]);           
 
-        $response = $this->actingAs($user)->get($verificationUrl);
+        $response = $this->actingAs($user)->getJson($verificationUrl);
 
         Event::assertDispatched(Verified::class);
-        $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());        
+        $response            
+            ->assertJson([
+                'message' => 'verified',
+            ]);
+
     }
 
     public function test_email_is_not_verified_with_invalid_hash()
@@ -52,13 +56,11 @@ class EmailVerificationTest extends TestCase
             'email_verified_at' => null,
         ]);
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1('wrong-email')]
-        );
+        $hash =  Crypt::encrypt($user->getKey());        
 
-        $this->actingAs($user)->get($verificationUrl);
+        $verificationUrl = route('verification.verify', ['hash'=>'invalid hash']);   
+
+        $this->actingAs($user)->getJson($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }

@@ -19,10 +19,10 @@ class TweetsTest extends TestCase
     {
 
         //Get the list of tweets        
-        $this->json('GET','/api/tweets')->assertStatus(401); 
+        $this->json('GET', '/api/tweets')->assertStatus(401); 
 
         //create tweets                            
-        $this->json('POST','/api/tweets', [])->assertStatus(401);               
+        $this->json('POST', '/api/tweets', [])->assertStatus(401);               
 
     }
 
@@ -35,30 +35,33 @@ class TweetsTest extends TestCase
         $user2 = User::factory()->create();
         $tweet2 = Tweet::factory()->create(['user_id'=>$user2->id]);                
 
-        $response = $this->get('/api/tweets')
-                         ->assertStatus(200)                    
-                         ->assertJson([
-                            [
-                                'content' => $tweet->content,
-                                'image_path' => $tweet->image_path,
-                                'user' => [
-                                    'name' => $user->name,
-                                    'username' => $user->username,
-                                    'verified' => $user->verified                
-                                ]
-                             ],
-                             [
-                                'content' => $tweet2->content,
-                                'image_path' => $tweet2->image_path,
-                                'user' => [
-                                    'name' => $user2->name,
-                                    'username' => $user2->username,
-                                    'verified' => $user2->verified                
-                                ]
-                             ]
-                        ]);
+        $data = ['data'=> [
+                    [
+                        'content' => $tweet->content,
+                        'image_path' => $tweet->image_path,
+                        'user' => [
+                            'name' => $user->name,
+                            'username' => $user->username,
+                            'verified' => $user->verified                
+                        ]
+                    ],
+                    [
+                        'content' => $tweet2->content,
+                        'image_path' => $tweet2->image_path,
+                        'user' => [
+                            'name' => $user2->name,
+                            'username' => $user2->username,
+                            'verified' => $user2->verified                
+                        ]
+                    ]
+            ]
+        ];
 
-        $this->assertCount(2, $response->json());
+        $response = $this->get('/api/tweets')
+                ->assertStatus(200)
+                ->assertJson($data);
+
+        $this->assertCount(2, $response->json()['data']);
       
     }
 

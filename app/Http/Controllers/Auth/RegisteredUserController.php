@@ -11,16 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class RegisteredUserController extends Controller
-{
-    /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('auth.register');
-    }
+{    
 
     /**
      * Handle an incoming registration request.
@@ -49,7 +40,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         if (request()->wantsJson()){
-            return ['signup'=>'success'];
+            return ['message'=>'registered'];
         }
 
         return redirect(RouteServiceProvider::HOME);

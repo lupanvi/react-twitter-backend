@@ -31,7 +31,7 @@ class VerifyEmailController extends Controller
         
         if ($request->user()->hasVerifiedEmail()) {                        
             return $request->wantsJson()
-                ? response([], 204)
+                ? response()->json(['message'=>'user already verified'])
                 : redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
         }        
 
@@ -40,7 +40,7 @@ class VerifyEmailController extends Controller
         }
         
         return $request->wantsJson()
-               ? response([], 204)
-               : redirect()->intended(RouteServiceProvider::HOME.'?verified=1'); 
+               ? response()->json(['message'=>'verified'])
+               : redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
     }
 }
