@@ -20,7 +20,8 @@ class Tweet extends Model
         'user_id',
     ];  
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -32,11 +33,11 @@ class Tweet extends Model
 
     public function getImagePathAttribute($image)
     {                
-        if ($image===null){
+        if ($image===null ) {
             return null;
         }
 
-        if (strpos($image, 'via.')){
+        if (strpos($image, 'via.')) {
             return $image;
         }
         

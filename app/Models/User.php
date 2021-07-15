@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\VerifyEmail;
+use Laravel\Scout\Searchable;
+use ElasticScoutDriverPlus\QueryDsl;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, Searchable, QueryDsl;
 
     /**
      * The attributes that are mass assignable.
@@ -68,5 +70,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {                
         $this->notify(new VerifyEmail());
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,            
+            'username' => $this->username,
+        ];
     }
 }

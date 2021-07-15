@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TweetResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\Tweet;
+use App\Models\User;
 
 class TweetsController extends Controller
 {
@@ -42,15 +44,48 @@ class TweetsController extends Controller
         return $tweet->load('user');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
+    /** 
+     * Search for a given user in elastic search
+     * with Laravel scout methods
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function search()
+    {  
+        
+        request()->validate([
+            'search_term' => 'required'            
+        ]); 
+              
+        //it searches for name and username, fields are defined in the User Model
+        $searchResult = User::search(request('search_term'))->paginate(5);
+
+        return UserResource::collection($searchResult);
+
+    }
+
+
+    /** 
+     * Search for a given user in elastic search with prefixes
+     * using elastic-scout-driver-plus
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function search_with_prefix()
+    {  
+        
+        request()->validate([
+            'search_term' => 'required'
+        ]);              
+        
+        $searchResult = User::prefixSearch()
+            ->fields('name')
+            ->value(request('search_term'))            
+            ->size(5)            
+            ->execute();        
+
+        return UserResource::collection($searchResult->models());
+
     }
 
     /**

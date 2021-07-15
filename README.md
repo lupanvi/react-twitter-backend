@@ -5,6 +5,7 @@ This open source project was made with:
 * Laravel 8
 * Sanctum
 * PHPunit
+* ElasticSearch
 
 ## Installation
 
