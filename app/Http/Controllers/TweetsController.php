@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\Tweet;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class TweetsController extends Controller
 {
@@ -18,8 +19,10 @@ class TweetsController extends Controller
     public function index()
     {
         return TweetResource::collection(
-            Tweet::with('user')->latest()->paginate(10)
-        );
+            Cache::remember('tweets', 60*60*24, function () {
+                return Tweet::with('user')->latest()->paginate(10);
+            })
+        );        
     }   
 
     /**
@@ -41,7 +44,9 @@ class TweetsController extends Controller
                 : null
         ]);
 
-        return $tweet->load('user');
+        Cache::forget('tweets');
+
+        return new TweetResource($tweet->load('user'));
     }
 
     /** 
