@@ -36,4 +36,13 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
     }
+
+    public function test_users_can_logout()
+    {
+        $this->signIn();
+
+        $this->post('/logout');
+        
+        $this->assertGuest('web');
+    }
 }

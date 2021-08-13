@@ -86,7 +86,7 @@ class TweetsTest extends TestCase
 
         $attributes = Tweet::factory()->raw(['content'=>'']);          
 
-        $this->post('/api/tweets', $attributes)->assertSessionHasErrors('content');       
+        $this->post('/api/tweets', $attributes)->assertSessionHasErrors('content');
     }
 
     /** @test */
@@ -119,4 +119,34 @@ class TweetsTest extends TestCase
         ])->assertStatus(422);
 
     }
+
+    public function test_search_users_by_name()
+    {
+        $this->signIn();
+        $search_term = 'Luis';
+        $user = User::factory()->create(['name'=>$search_term]);
+
+        $response = $this->json('POST', '/api/tweets/search', [
+            'search_term' => $search_term
+        ]);
+
+        $response->assertJson([['name'=>$search_term]]);
+
+    }
+
+    public function test_search_users_by_username()
+    {
+        $this->signIn();
+        $search_term = 'luis2021';
+        $user = User::factory()->create(['username'=>$search_term]);
+
+        $response = $this->json('POST', '/api/tweets/search', [
+            'search_term' => $search_term
+        ]);
+
+        $response->assertJson([['username'=>$search_term]]);
+
+    }
+
+    
 }

@@ -19,28 +19,25 @@ class VerifyEmailController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */    
     public function verify(Request $request)
-    {                
-        
+    {                                        
+
         try {
             if (Crypt::decrypt($request->route('hash')) != $request->user()->getKey()) {
                 abort(400, 'The link is wrong');
             }
         } catch (DecryptException $e) {
-            abort(400, 'The link is wrong');        
+            abort(400, 'The link is wrong'); 
         }        
         
         if ($request->user()->hasVerifiedEmail()) {                        
-            return $request->wantsJson()
-                ? response()->json(['message'=>'user already verified'])
-                : redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
+            return response()->json(['message'=>'user already verified']);
         }        
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
         
-        return $request->wantsJson()
-               ? response()->json(['message'=>'verified'])
-               : redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
+        return response()->json(['message'=>'verified']);
+                       
     }
 }

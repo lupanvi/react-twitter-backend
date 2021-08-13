@@ -14,18 +14,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class EmailVerificationTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_email_verification_screen_can_be_rendered()
-    {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
-
-        $response = $this->actingAs($user)->get('/verify-email');
-
-        $response->assertStatus(200);
-    }
+    use RefreshDatabase;    
 
     public function test_email_can_be_verified()
     {
@@ -34,12 +23,14 @@ class EmailVerificationTest extends TestCase
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
+
+        $this->signIn($user);
        
         $hash =  Crypt::encrypt($user->getKey());        
 
         $verificationUrl = route('verification.verify', ['hash'=>$hash]);           
 
-        $response = $this->actingAs($user)->getJson($verificationUrl);
+        $response = $this->getJson($verificationUrl);
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());        
@@ -56,12 +47,33 @@ class EmailVerificationTest extends TestCase
             'email_verified_at' => null,
         ]);
 
+        $this->signIn($user);
+
         $hash =  Crypt::encrypt($user->getKey());        
 
         $verificationUrl = route('verification.verify', ['hash'=>'invalid hash']);   
 
-        $this->actingAs($user)->getJson($verificationUrl);
+        $this->getJson($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
+
+    public function test_email_is_already_verified()
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+        $this->signIn($user);
+       
+        $hash =  Crypt::encrypt($user->getKey());        
+        $verificationUrl = route('verification.verify', ['hash'=>$hash]);           
+        $this->getJson($verificationUrl);
+
+        $response = $this->getJson($verificationUrl);
+
+        $response->assertJson(['message'=>'user already verified']);        
+
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+    }
+
 }

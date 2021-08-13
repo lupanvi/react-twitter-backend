@@ -22,12 +22,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();                
         
         $request->session()->regenerate();
-
-        if ($request->wantsJson()) {
-            return response()->json($request->user());
-        }
-
-        return redirect(RouteServiceProvider::HOME);
+        
+        return response()->json($request->user());        
+        
     }
 
     /**
@@ -38,12 +35,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('web')->logout();        
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        if ($request->wantsJson()){
+        if ($request->wantsJson()) {
             return response()->json(['message'=>'log out successfully']);
         }
         return redirect('/');

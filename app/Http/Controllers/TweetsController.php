@@ -63,7 +63,7 @@ class TweetsController extends Controller
         ]); 
               
         //it searches for name and username, fields are defined in the User Model
-        $searchResult = User::search(request('search_term'))->paginate(5);
+        $searchResult = User::search(request('search_term'))->take(5)->get();
 
         return UserResource::collection($searchResult);
 
@@ -92,38 +92,5 @@ class TweetsController extends Controller
         return UserResource::collection($searchResult->models());
 
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+  
 }

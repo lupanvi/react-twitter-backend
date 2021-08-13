@@ -19,7 +19,7 @@ use \App\Http\Controllers\TweetsController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Resources\UserResource;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request ) {
+Route::middleware(['auth:sanctum','verified'])->get('/user', function (Request $request ) {
     return new UserResource($request->user());
 });
 
