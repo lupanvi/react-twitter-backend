@@ -73,10 +73,10 @@ class TweetsController extends Controller
     /** 
      * Search for a given user in elastic search with prefixes
      * using elastic-scout-driver-plus
-     * 
-     * @return \Illuminate\Http\Response
+     * @codeCoverageIgnore
+     * @return \App\Http\Resources\UserResource
      */
-    public function search_with_prefix()
+    public function searchWithPrefix()
     {  
         
         request()->validate([
@@ -84,7 +84,7 @@ class TweetsController extends Controller
         ]);              
         
         $searchResult = User::prefixSearch()
-            ->fields('name')
+            ->field('username')
             ->value(request('search_term'))            
             ->size(5)            
             ->execute();        

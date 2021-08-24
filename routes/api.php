@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/verify-email/{hash}', [VerifyEmailController::class, 'verify'])
         ->middleware(['throttle:6,1'])
         ->name('verification.verify'); 
-    Route::post('/tweets/search', [TweetsController::class, 'search']);              
+    Route::post('/tweets/search', [TweetsController::class, 'search']);
+    Route::post('/tweets/search_with_prefix', [TweetsController::class, 'searchWithPrefix']);
 
 });

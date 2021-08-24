@@ -148,5 +148,29 @@ class TweetsTest extends TestCase
 
     }
 
+    public function test_search_users_by_prefix()
+    {
+        $this->signIn();
+        $search_term = 'luis2021';
+        $user1 = User::factory()->create(['username'=>$search_term]);
+        $search_term2 = 'luispanta';
+        $user2 = User::factory()->create(['username'=>$search_term2]);
+
+        $response = $this->json('POST', '/api/tweets/search_with_prefix', [
+            'search_term' => 'luis'
+        ]);        
+        
+        $response->assertJsonFragment(
+            ['username'=>'luispanta']
+        );
+
+        $response->assertJsonCount(2);
+        $response->assertJson([
+            $user1->toArray(),
+            $user2->toArray()
+        ]);
+
+    }
+
     
 }

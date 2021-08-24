@@ -40,9 +40,8 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        if ($request->wantsJson()) {
-            return response()->json(['message'=>'log out successfully']);
-        }
-        return redirect('/');
+        
+        return response()->json(['message'=>'log out successfully']);
+        
     }
 }

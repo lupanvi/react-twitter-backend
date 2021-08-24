@@ -41,8 +41,10 @@ class AuthenticationTest extends TestCase
     {
         $this->signIn();
 
-        $this->post('/logout');
+        $this->postJson('/logout');
         
         $this->assertGuest('web');
+
+        
     }
 }

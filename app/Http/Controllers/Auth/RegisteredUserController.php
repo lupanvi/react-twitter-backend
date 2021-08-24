@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,11 +39,10 @@ class RegisteredUserController extends Controller
         ]));
 
         event(new Registered($user));
+        
+        return response()->json(['message'=>'registered'], Response::HTTP_CREATED);
+        
 
-        if (request()->wantsJson()){
-            return ['message'=>'registered'];
-        }
-
-        return redirect(RouteServiceProvider::HOME);
+        
     }
 }
