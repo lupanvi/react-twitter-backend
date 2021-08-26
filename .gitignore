@@ -13,3 +13,5 @@ npm-debug.log
 yarn-error.log
 .vscode
 /reports
+/public/docs
+/.scribe

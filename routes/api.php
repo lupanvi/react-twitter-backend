@@ -17,14 +17,11 @@ use \App\Http\Controllers\TweetsController;
 */
 
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Resources\UserResource;
-
-Route::middleware(['auth:sanctum','verified'])->get('/user', function (Request $request ) {
-    return new UserResource($request->user());
-});
+use App\Http\Controllers\UserController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::get('/user', [UserController::class, 'user'])->middleware(['verified']);
     Route::get('/tweets', [TweetsController::class,'index']);
     Route::post('/tweets', [TweetsController::class, 'store']);
     Route::get('/verify-email/{hash}', [VerifyEmailController::class, 'verify'])

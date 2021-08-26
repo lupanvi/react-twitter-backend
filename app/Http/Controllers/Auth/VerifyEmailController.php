@@ -10,14 +10,29 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
+/**
+ * @group Verification
+ *
+ * Api endpoints for verifying users
+ */
 class VerifyEmailController extends Controller
 {   
 
     /**
      * Mark the authenticated user's email address as verified.
+     * 
+     * @urlParam hash string required The hash for verification . Example: GumLEeOCoLo4XNvtqVecoOi38OuGXOPfRcD5q6WF2YQ     
+     * 
+     * @response 200 {
+     *     "message": "verified"
+     * }
+     * 
+     * @response status=400 scenario="Invalid link" {
+     *    "message": "The link is wrong"
+     * }
      *
      * @param  \Illuminate\Foundation\Auth\EmailVerificationRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      */    
     public function verify(Request $request)
     {                                        
