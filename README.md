@@ -6,7 +6,7 @@ This open source project was made with:
 * Sanctum
 * PHPunit
 * ElasticSearch
-* Code Coverage up to 100%
+* 100 %Code Coverage
 * API documentation
 
 ## Installation
